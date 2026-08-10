@@ -1,0 +1,134 @@
+[
+  {
+    "text": "Manage",
+    "href": "https://engage-support.ibm.com/OpDashboard/#/manage",
+    "id": "",
+    "class": "manage-views"
+  },
+  {
+    "text": "Help",
+    "href": "https://ibm.box.com/v/OperationsDashboardL1",
+    "id": "",
+    "class": ""
+  },
+  {
+    "text": "All",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset\n                        All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "All",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset\n                        All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "All",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset\n                        All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "All",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset\n                        All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "All",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset\n                        All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "All",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset\n                        All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "Current Month",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "id": "",
+    "class": "filter-btn-text ng-binding"
+  },
+  {
+    "text": "Reset All",
+    "href": "https://engage-support.ibm.com/OpDashboard/#",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "Reset All",
+    "href": "",
+    "id": "",
+    "class": "filter-btn-text"
+  },
+  {
+    "text": "Channel",
+    "href": "",
+    "id": "",
+    "class": ""
+  },
+  {
+    "text": "Organization",
+    "href": "",
+    "id": "",
+    "class": ""
+  },
+  {
+    "text": "View details",
+    "href": "https://engage-support.ibm.com/OpDashboard/#/cycletime",
+    "id": "",
+    "class": "cycletime-views"
+  },
+  {
+    "text": "View details",
+    "href": "https://engage-support.ibm.com/OpDashboard/#/openReq",
+    "id": "",
+    "class": "openReq-views"
+  },
+  {
+    "text": "View details",
+    "href": "https://engage-support.ibm.com/OpDashboard/#/sellerFeedback",
+    "id": "",
+    "class": "salesFB-views"
+  }
+]

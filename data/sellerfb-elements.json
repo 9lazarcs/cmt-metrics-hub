@@ -1,0 +1,401 @@
+[
+  {
+    "type": "button",
+    "tag": "BUTTON",
+    "text": "Reset to Default",
+    "id": "",
+    "class": "filter-box more-filters clear-btn",
+    "ngClick": "clearAll()"
+  },
+  {
+    "type": "button",
+    "tag": "BUTTON",
+    "text": "Update",
+    "id": "",
+    "class": "filter-box more-filters update-btn",
+    "ngClick": "sendPost()"
+  },
+  {
+    "type": "button",
+    "tag": "BUTTON",
+    "text": "Save View",
+    "id": "",
+    "class": "save-btnSum",
+    "ngClick": null
+  },
+  {
+    "type": "button",
+    "tag": "BUTTON",
+    "text": "×",
+    "id": "",
+    "class": "close",
+    "ngClick": null
+  },
+  {
+    "type": "button",
+    "tag": "BUTTON",
+    "text": "Save",
+    "id": "",
+    "class": "save-btn",
+    "ngClick": "saveView()"
+  },
+  {
+    "type": "button",
+    "tag": "BUTTON",
+    "text": "Cancel",
+    "id": "",
+    "class": "cancel-btn",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Manage",
+    "id": "",
+    "class": "manage-views",
+    "href": "https://engage-support.ibm.com/OpDashboard/#/manage",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Help",
+    "id": "",
+    "class": "",
+    "href": "https://ibm.box.com/v/SalesEngagementFeedbackL2",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "All",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.iot')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.iot')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "All",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.tribe')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.tribe')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "All",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.squad-org')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.squad-org')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "All",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.center')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.center')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "All",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.brand')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.brand')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "All",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.reqType')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.reqType')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Current Month",
+    "id": "",
+    "class": "filter-btn-text ng-binding",
+    "href": "https://engage-support.ibm.com/OpDashboard/",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "https://engage-support.ibm.com/OpDashboard/#",
+    "ngClick": "clearSelFilter('.reportPeriod')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.reportPeriod')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Reset\n                        All",
+    "id": "",
+    "class": "filter-btn-text",
+    "href": "",
+    "ngClick": "clearSelFilter('.moreFilters')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-remove clearAll crossIcon",
+    "href": "",
+    "ngClick": "hide('.moreFilters')"
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Channel",
+    "id": "",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Organization",
+    "id": "",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Rating",
+    "id": "",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Painpoints",
+    "id": "",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Request Owner",
+    "id": "",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Request Owner Functional Manager",
+    "id": "rofm",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "Deal Desk",
+    "id": "",
+    "class": "",
+    "href": "",
+    "ngClick": null
+  },
+  {
+    "type": "link",
+    "tag": "A",
+    "text": "",
+    "id": "",
+    "class": "glyphicon glyphicon-triangle-bottom filter-arrow-more",
+    "href": "",
+    "ngClick": null
+  }
+]

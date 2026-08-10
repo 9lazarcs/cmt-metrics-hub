@@ -1,0 +1,46 @@
+<div class="popup-filter reportPeriod" style="display: block;">
+                <div class="filter-dropdown-label">
+                    <div class="clearAll sameline"><a class="filter-btn-text" href="#" ng-click="clearSelFilter('.reportPeriod')">Reset All</a></div>
+                    <a class="glyphicon glyphicon-remove clearAll crossIcon" ng-click="hide('.reportPeriod')"></a>
+                </div>
+                <!-- <div class="panel-body" style="display:none"><b>Include requests that were:</b><br>
+                    <div class="panel-reqtype sameline" style="display:none"><input type="radio" ng-model="selectedFilters.reqStatus" value="Closed"/>&nbsp;Closed</div>
+                </div> -->
+                <div class="report-period-panel">
+                    <div class="report-period-section container-fluid">
+                        <b>During:</b><br>
+                        <div class="row">
+                            <div class="col-xs-6">
+                                <!-- ngRepeat: reportPeriod in periodsCol1 --><div ng-repeat="reportPeriod in periodsCol1" class="ng-binding ng-scope">
+                                    <input id="Today" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Today">
+                                    Today
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol1 --><div ng-repeat="reportPeriod in periodsCol1" class="ng-binding ng-scope">
+                                    <input id="Current Month" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Current Month">
+                                    Current Month
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol1 --><div ng-repeat="reportPeriod in periodsCol1" class="ng-binding ng-scope">
+                                    <input id="Current Quarter" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Current Quarter">
+                                    Current Quarter
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol1 --><div ng-repeat="reportPeriod in periodsCol1" class="ng-binding ng-scope">
+                                    <input id="Current Year" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Current Year">
+                                    Current Year
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol1 --><div ng-repeat="reportPeriod in periodsCol1" class="ng-binding ng-scope">
+                                    <input id="Custom Date Range" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Custom Date Range">
+                                    Custom Date Range
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol1 -->
+                            </div>
+                            <div class="col-xs-6">
+                                <br>
+                                <!-- ngRepeat: reportPeriod in periodsCol2 --><div ng-repeat="reportPeriod in periodsCol2" class="ng-binding ng-scope">
+                                    <input id="Previous Month" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Previous Month">
+                                    Previous Month
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol2 --><div ng-repeat="reportPeriod in periodsCol2" class="ng-binding ng-scope">
+                                    <input id="Previous Quarter" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Previous Quarter">
+                                    Previous Quarter
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol2 --><div ng-repeat="reportPeriod in periodsCol2" class="ng-binding ng-scope">
+                                    <input id="Previous Year" name="reportPeriod" ng-change="periodsChanged()" ng-model="selectedFilters.reportPeriod" ng-value="reportPeriod" type="radio" class="ng-pristine ng-valid" value="Previous Year">
+                                    Previous Year
+                                </div><!-- end ngRepeat: reportPeriod in periodsCol2 -->
+                            </div>
+                        </div>
+                    </div>
+                    <div class="custom-date-

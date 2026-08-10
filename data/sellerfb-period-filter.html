@@ -1,0 +1,54 @@
+<div class="container-fluid">
+    <div class="row filters-container">
+        <div class="filter-col col-xs-2">
+            <div class=" filter-box" ng-click="showhide('.iot')">
+                <p class="bold filter-dropdown-container">
+                    <span class="filter-dropdown-label">Geo/Market/Country</span>
+                    <span class="glyphicon glyphicon-triangle-bottom filter-arrow"></span>
+                    <br>
+                </p>
+                <p class="filter-dropdown-container filter-link"><a class="filter-btn-text ng-binding" href="">All</a></p>
+            </div>
+            <div class="popup-filter iot">
+                <div class="filter-dropdown-label">
+                    <div class="clearAll sameline"><a class="filter-btn-text" ng-click="clearSelFilter('.iot')">Reset
+                        All</a></div>
+                    <a class="glyphicon glyphicon-remove clearAll crossIcon" ng-click="hide('.iot')"></a>
+                </div>
+                <div class="filter-loader-div" id="iot-loader">
+                    <img class="iot-filter-loader" data-ng-src="image/ajax-loader-small.gif" src="image/ajax-loader-small.gif">
+                </div>
+                <div id="iot-jstree"></div>
+            </div>
+
+        </div>
+        <div class="filter-col col-xs-1">
+            <div class=" filter-box" ng-click="showhide('.tribe')">
+                <p class="bold filter-dropdown-container">
+                    <span class="filter-dropdown-label">Squad Group/Squad</span>
+                    <span class="glyphicon glyphicon-triangle-bottom filter-arrow"></span><br>
+                </p>
+                <p class="filter-dropdown-container filter-link"><a class="filter-btn-text ng-binding" href="">All</a>
+                </p>
+            </div>
+            <div class="popup-filter tribe">
+                <div class="filter-dropdown-label">
+                    <div class="clearAll sameline"><a class="filter-btn-text" ng-click="clearSelFilter('.tribe')">Reset
+                        All</a></div>
+                    <a class="glyphicon glyphicon-remove clearAll crossIcon" ng-click="hide('.tribe')"></a>
+                </div>
+                <div class="filter-loader-div" id="tribe-loader">
+                    <img class="tribe-filter-loader" data-ng-src="image/ajax-loader-small.gif" src="image/ajax-loader-small.gif">
+                </div>
+                <div id="tribe-jstree"></div>
+            </div>
+        </div>
+        <div class="filter-col col-xs-1">
+            <div class=" filter-box" ng-click="showhide('.squad-org')">
+                <p class="bold filter-dropdown-container">
+                    <span class="filter-dropdown-label">Squad Organization</span>
+                    <span class="glyphicon glyphicon-triangle-bottom filter-arrow"></span><br>
+                </p>
+                <p class="filter-dropdown-container filter-link"><a class="filter-btn-text ng-binding" href="">All</a>
+                </p>
+       

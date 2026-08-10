@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CMT Metrics Hub</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ─── SIDE NAV ──────────────────────────────────────────────────────────── -->
+<nav class="sidenav" id="sidenav">
+  <div class="sidenav__logo">
+    <span class="logo-ibm">IBM</span>
+    <span class="logo-title">CMT Metrics Hub</span>
+  </div>
+  <ul class="sidenav__links">
+    <li><a href="#" class="nav-link active" data-page="dashboard">
+      <svg viewBox="0 0 16 16"><rect x="1" y="1" width="6" height="6"/><rect x="9" y="1" width="6" height="6"/><rect x="1" y="9" width="6" height="6"/><rect x="9" y="9" width="6" height="6"/></svg>
+      Dashboard
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="volume">
+      <svg viewBox="0 0 16 16"><path d="M2 12h12M2 8h9M2 4h6" stroke-width="2" fill="none" stroke="currentColor"/></svg>
+      Volume
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="mi">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-width="2"/><path d="M8 5v4l2.5 1.5" stroke="currentColor" stroke-width="1.5" fill="none"/></svg>
+      M&amp;I
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="nps">
+      <svg viewBox="0 0 16 16"><path d="M1 14 L5 8 L9 11 L13 3" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      NPS
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="team">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="5" r="3"/><path d="M2 14c0-3.3 2.7-6 6-6s6 2.7 6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      By Member
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="ingest">
+      <svg viewBox="0 0 16 16"><path d="M8 1v10M4 7l4 4 4-4M2 13h12" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      Ingest Data
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="uncategorized">
+      <svg viewBox="0 0 16 16"><path d="M2 8h12M8 2v12" stroke="currentColor" stroke-width="2" fill="none"/><circle cx="8" cy="8" r="5" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      Uncategorized
+      <span class="nav-badge" id="nav-uncat-count"></span>
+    </a></li>
+    <li><a href="#" class="nav-link" data-page="admin">
+      <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="2"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      Admin
+    </a></li>
+  </ul>
+  <div class="sidenav__status">
+    <span id="server-status-dot" class="status-dot"></span>
+    <span id="server-status-label">Connecting…</span>
+  </div>
+</nav>
+
+<!-- ─── CLEAR DATA MODAL ─────────────────────────────────────────────────── -->
+<div class="modal-overlay" id="clear-modal" role="dialog" aria-modal="true" aria-labelledby="clear-modal-title">
+  <div class="modal">
+    <div class="modal__header">
+      <div class="modal__title-row">
+        <!-- warning icon -->
+        <svg class="modal__icon" viewBox="0 0 20 20" fill="none">
+          <path d="M10 2L1.5 17h17L10 2z" stroke="#ff8389" stroke-width="1.5" fill="rgba(255,131,137,.12)"/>
+          <path d="M10 8v4M10 14v1" stroke="#ff8389" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+        <h2 class="modal__title" id="clear-modal-title">Clear Dashboard Data</h2>
+      </div>
+      <button class="modal__close" id="clear-modal-close" aria-label="Close">✕</button>
+    </div>
+
+    <p class="modal__desc">
+      Choose what to clear. <strong>Lookup tables are always preserved</strong>
+      (squad members, reason codes). You can re-ingest XLSX files at any time.
+    </p>
+
+    <!-- Scope selector -->
+    <div class="clear-options" id="clear-scope-group" role="radiogroup" aria-labelledby="clear-scope-label">
+      <p class="clear-options__label" id="clear-scope-label">Clear scope</p>
+
+      <label class="clear-option" id="opt-derived">
+        <input type="radio" name="clear-scope" value="derived" checked />
+        <div class="clear-option__body">
+          <div class="clear-option__title">Derived metrics only
+            <span class="badge badge--warn" style="margin-left:6px">Recommended</span>
+          </div>
+          <div class="clear-option__desc">
+            Wipes the computed tables (Weighted Volume, M&I, NPS data) so you can
+            re-run analysis with different filters or after fixing reason codes.
+            Raw imports are kept — no re-upload needed.
+          </div>
+          <div class="clear-option__tables">
+            <code>weighted_volume</code> · <code>mi_data</code> · <code>nps_data</code>
+          </div>
+        </div>
+      </label>
+
+      <label class="clear-option" id="opt-metrics">
+        <input type="radio" name="clear-scope" value="metrics" />
+        <div class="clear-option__body">
+          <div class="clear-option__title">All imported data</div>
+          <div class="clear-option__desc">
+            Removes derived metrics <em>and</em> all raw imported rows. Use this to
+            start a new analysis period from scratch, then re-ingest fresh XLSX exports.
+          </div>
+          <div class="clear-option__tables">
+            <code>weighted_volume</code> · <code>mi_data</code> · <code>nps_data</code> ·
+            <code>raw_requests</code> · <code>requests</code> · <code>raw_nps</code>
+          </div>
+        </div>
+      </label>
+
+      <label class="clear-option" id="opt-all">
+        <input type="radio" name="clear-scope" value="all" />
+        <div class="clear-option__body">
+          <div class="clear-option__title">Full reset
+            <span class="badge badge--error" style="margin-left:6px">Destructive</span>
+          </div>
+          <div class="clear-option__desc">
+            Everything above <em>plus</em> the ingestion history log. The database
+            is left empty except for squad members and reason codes.
+          </div>
+          <div class="clear-option__tables">
+            All data tables + <code>ingestion_log</code>
+          </div>
+        </div>
+      </label>
+    </div>
+
+    <!-- Confirmation row -->
+    <div class="modal__confirm-row">
+      <label class="confirm-checkbox">
+        <input type="checkbox" id="clear-confirm-check" />
+        I understand this action cannot be undone
+      </label>
+    </div>
+
+    <!-- Counts preview (filled by JS before showing modal) -->
+    <div class="modal__counts" id="clear-counts-preview"></div>
+
+    <div id="clear-modal-error" class="ingest-result error" style="display:none;margin-bottom:8px"></div>
+
+    <div class="modal__footer">
+      <button class="btn btn--ghost" id="clear-modal-cancel">Cancel</button>
+      <button class="btn btn--danger" id="clear-modal-confirm" disabled>
+        <svg viewBox="0 0 16 16" width="14" height="14" style="margin-right:5px"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        Clear Data
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── MAIN CONTENT ─────────────────────────────────────────────────────── -->
+<main class="main-content" id="main-content">
+
+  <!-- ── FILTER BAR ──────────────────────────────────────────────────────── -->
+  <div class="filter-bar" id="filter-bar">
+    <label class="filter-label">Period</label>
+    <select id="filter-period" class="filter-select">
+      <option value="">All periods</option>
+      <!-- populated dynamically by app.js from /api/metrics/periods -->
+    </select>
+    <label class="filter-label">Member</label>
+    <div class="multi-select-wrap" id="member-select-wrap">
+      <button type="button" class="multi-select-trigger" id="member-select-trigger">
+        <span id="member-select-label">All Members</span>
+        <svg viewBox="0 0 10 6" width="10" height="6" style="margin-left:6px;flex-shrink:0"><path d="M0 0l5 6 5-6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      </button>
+      <div class="multi-select-dropdown" id="member-select-dropdown" style="display:none">
+        <div class="multi-select-search-wrap">
+          <input type="text" class="multi-select-search" id="member-search-input" placeholder="Search members…" autocomplete="off" />
+        </div>
+        <div class="multi-select-options" id="member-options-list"></div>
+        <div class="multi-select-footer">
+          <button type="button" class="btn btn--ghost" id="member-select-all" style="font-size:11px;padding:3px 8px">All</button>
+          <button type="button" class="btn btn--ghost" id="member-select-none" style="font-size:11px;padding:3px 8px">None</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn btn--primary" id="apply-filters">Apply</button>
+    <button class="btn btn--ghost" id="reset-filters">Reset</button>
+    <span class="spacer"></span>
+    <button class="btn btn--ghost" id="export-btn">⬇ Export XLSX</button>
+    <button class="btn btn--ghost btn--clear-trigger" id="clear-data-btn" title="Clear all dashboard data for a fresh analysis">
+      <svg viewBox="0 0 16 16" width="13" height="13" style="margin-right:4px"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      Clear Data
+    </button>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: Dashboard
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page active" id="page-dashboard">
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p class="page-subtitle" id="kpi-period-label">All periods — loading…</p>
+    </div>
+
+    <!-- KPI tiles -->
+    <div class="kpi-grid">
+      <div class="kpi-tile">
+        <div class="kpi-tile__label">Total Volume</div>
+        <div class="kpi-tile__value" id="kpi-volume">—</div>
+        <div class="kpi-tile__sub">Requests handled</div>
+      </div>
+      <div class="kpi-tile kpi-tile--accent">
+        <div class="kpi-tile__label">Weighted Volume</div>
+        <div class="kpi-tile__value" id="kpi-weighted">—</div>
+        <div class="kpi-tile__sub">Complexity-adjusted</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile__label">NPS Score</div>
+        <div class="kpi-tile__value" id="kpi-nps">—</div>
+        <div class="kpi-tile__sub" id="kpi-nps-sub">Promoters − Detractors</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile__label">NPS Responses</div>
+        <div class="kpi-tile__value" id="kpi-nps-total">—</div>
+        <div class="kpi-tile__sub" id="kpi-promoters-sub">— promoters</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile__label">Participation Rate</div>
+        <div class="kpi-tile__value" id="kpi-participation">—</div>
+        <div class="kpi-tile__sub">NPS / Volume</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile__label">Active Members</div>
+        <div class="kpi-tile__value" id="kpi-members">—</div>
+        <div class="kpi-tile__sub">With assigned work</div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="charts-row">
+      <div class="chart-card chart-card--wide">
+        <h3 class="chart-card__title">Monthly Volume &amp; Weighted Volume</h3>
+        <canvas id="chart-monthly-vol" height="200"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3 class="chart-card__title">NPS by Month</h3>
+        <canvas id="chart-nps-trend" height="200"></canvas>
+      </div>
+    </div>
+
+    <!-- Volume by member bar -->
+    <div class="charts-row">
+      <div class="chart-card chart-card--wide">
+        <h3 class="chart-card__title">Volume by Team Member</h3>
+        <canvas id="chart-member-vol" height="180"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3 class="chart-card__title">NPS by Member</h3>
+        <canvas id="chart-member-nps" height="180"></canvas>
+        <div style="display:flex;gap:16px;justify-content:center;margin-top:8px;flex-wrap:wrap;font-size:11px;color:var(--text-secondary)">
+          <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#4589ff"></span>NPS Feedback (#)</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:10px;height:10px;border-radius:2px;background:#42be65"></span>NPS Score</span>
+          <span style="display:flex;align-items:center;gap:5px"><span style="display:inline-block;width:22px;height:2px;background:#f1c21b;border-radius:1px"></span>Participation %</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: Volume
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-volume">
+    <div class="page-header"><h1>Weighted Volume</h1></div>
+    <div class="table-toolbar">
+      <span id="wv-count" class="table-count">— rows</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="wv-table">
+        <thead><tr>
+          <th>Request #</th><th>Team Member</th><th>Month</th><th>Close Date</th>
+          <th>Sub-Process</th><th>Process</th><th>Complexity</th><th>Weight</th>
+          <th>Status</th><th>Customer</th><th>Market</th>
+        </tr></thead>
+        <tbody id="wv-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="wv-pagination"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: M&I
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-mi">
+    <div class="page-header"><h1>Monitoring &amp; Insights (M&amp;I)</h1></div>
+    <div class="table-toolbar">
+      <input type="text" id="mi-search-request" class="text-input text-input--sm" placeholder="Request #" style="width:180px" />
+      <input type="text" id="mi-search-member"  class="text-input text-input--sm" placeholder="Team member" style="width:160px" />
+      <button class="btn btn--primary btn--sm" id="mi-search-btn">Search</button>
+      <button class="btn btn--ghost btn--sm"   id="mi-clear-btn">Clear</button>
+      <span id="mi-count" class="table-count" style="margin-left:8px">— rows</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="mi-table">
+        <thead><tr id="mi-thead-row">
+          <th data-col="request_number">Request #</th>
+          <th data-col="squad_member">Squad Member</th>
+          <th data-col="month">Month</th>
+          <th data-col="close_date">Close Date</th>
+          <th data-col="ct_days">CT Days</th>
+          <th>CT in Days</th>
+          <th data-col="ct_hours">CT Hours</th>
+          <th data-col="funnel_hours">Funnel Hrs</th>
+          <th data-col="squad_hours">Squad Hrs</th>
+          <th>Is Backdated</th>
+          <th data-col="ym_close">YM Close</th>
+          <th data-col="status">Status</th>
+        </tr></thead>
+        <tbody id="mi-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="mi-pagination"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: NPS
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-nps">
+    <div class="page-header"><h1>NPS Data</h1></div>
+    <div class="kpi-grid kpi-grid--compact">
+      <div class="kpi-tile kpi-tile--sm"><div class="kpi-tile__label">Promoters</div><div class="kpi-tile__value" id="nps-promoters">—</div></div>
+      <div class="kpi-tile kpi-tile--sm"><div class="kpi-tile__label">Passives</div><div class="kpi-tile__value" id="nps-passives">—</div></div>
+      <div class="kpi-tile kpi-tile--sm"><div class="kpi-tile__label">Detractors</div><div class="kpi-tile__value" id="nps-detractors">—</div></div>
+      <div class="kpi-tile kpi-tile--sm kpi-tile--accent"><div class="kpi-tile__label">NPS Score</div><div class="kpi-tile__value" id="nps-score-sm">—</div></div>
+    </div>
+    <div class="charts-row">
+      <div class="chart-card">
+        <h3 class="chart-card__title">NPS Breakdown</h3>
+        <canvas id="chart-nps-donut" height="220"></canvas>
+      </div>
+      <div class="chart-card chart-card--wide">
+        <h3 class="chart-card__title">NPS Score Trend</h3>
+        <canvas id="chart-nps-score-trend" height="220"></canvas>
+      </div>
+    </div>
+    <div id="nps-alert-bar"></div>
+    <div class="table-toolbar">
+      <span id="nps-count" class="table-count">— rows</span>
+      <span style="font-size:11px;color:var(--text-secondary)">Showing detractors &amp; unassigned only</span>
+    </div>
+    <div class="table-wrap">
+      <table class="data-table" id="nps-table">
+        <thead><tr>
+          <th>Month</th><th>Rated Date</th><th>Rating</th><th>Definition</th>
+          <th>Request #</th><th>Team Member</th><th>Comment</th>
+        </tr></thead>
+        <tbody id="nps-tbody"></tbody>
+      </table>
+    </div>
+    <div class="pagination" id="nps-pagination"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: By Member
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-team">
+    <div class="page-header"><h1>By Team Member</h1></div>
+    <div class="table-wrap">
+      <table class="data-table" id="team-table">
+        <thead><tr id="team-thead-row">
+          <th data-col="team_member"       data-type="str">Team Member</th>
+          <th data-col="volume"            data-type="num">Volume</th>
+          <th data-col="weighted_volume"   data-type="num">Weighted Volume</th>
+          <th data-col="avg_ct_days"       data-type="num">Avg CT (days)</th>
+          <th data-col="nps_total"         data-type="num">NPS Responses</th>
+          <th data-col="promoters"         data-type="num">Promoters</th>
+          <th data-col="detractors"        data-type="num">Detractors</th>
+          <th data-col="nps_score"         data-type="num">NPS Score</th>
+          <th data-col="participation_rate" data-type="num">Participation %</th>
+        </tr></thead>
+        <tbody id="team-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: Ingest Data
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-ingest">
+    <div class="page-header"><h1>Ingest Data</h1></div>
+
+    <div class="ingest-grid">
+      <!-- 1. Automated Request View Extraction -->
+      <div class="ingest-card ingest-card--full">
+        <h3>🤖 Automated Request View Extraction (EngageSupport)</h3>
+        <p class="ingest-card__desc">
+          Extract <strong>closed requests</strong> for squad <code>NAUS-CFCT-SW-2</code> directly
+          from EngageSupport via the ES API. Automatically date-chunks if the period exceeds the
+          1,000-row export limit. <strong>Sync New</strong> only fetches requests newer than the
+          latest close date already in the database. Requires a valid IBM session.
+        </p>
+        <div class="form-row" style="flex-wrap:wrap;gap:8px;align-items:flex-end">
+          <div>
+            <label class="filter-label">Period (full extract)</label>
+            <select id="rv-period" class="text-input text-input--sm" style="min-width:160px">
+              <option value="YTD">Current Year (YTD)</option>
+              <option value="MTD">Month to Date</option>
+              <option value="QTD">Quarter to Date</option>
+              <option value="PREV-M">Previous Month</option>
+              <option value="PREV-Q">Previous Quarter</option>
+              <option value="PREV-Y">Previous Year</option>
+            </select>
+          </div>
+          <button class="btn btn--primary" id="rv-extract-btn">
+            <span id="rv-extract-label">Extract &amp; Ingest</span>
+          </button>
+          <button class="btn btn--secondary" id="rv-sync-btn" title="Only fetch requests newer than the latest close date in the database">
+            <span id="rv-sync-label">⚡ Sync New</span>
+          </button>
+        </div>
+        <!-- Progress bar — hidden until an extraction job is running -->
+        <div id="rv-progress-wrap" style="display:none;margin-top:10px">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-secondary);margin-bottom:4px">
+            <span id="rv-progress-msg">Starting…</span>
+            <span id="rv-progress-pct"></span>
+          </div>
+          <div style="height:6px;background:var(--surface-2);border-radius:3px;overflow:hidden">
+            <div id="rv-progress-bar" style="height:100%;width:0%;background:var(--accent);border-radius:3px;transition:width 0.3s ease"></div>
+          </div>
+        </div>
+        <div id="rv-extract-result" class="ingest-result"></div>
+      </div>
+
+      <!-- 2. Automated NPS Extraction -->
+      <div class="ingest-card ingest-card--full">
+        <h3>🤖 Automated NPS Extraction (OpDashboard)</h3>
+        <p class="ingest-card__desc">
+          Launch the Playwright automation to extract the NPS Sales Engagement Feedback report directly from OpDashboard.
+          Requires a valid IBM session (run Phase 1 extractor first to authenticate).
+        </p>
+        <div class="form-row" style="flex-wrap:wrap;gap:8px;align-items:flex-end">
+          <div>
+            <label class="filter-label">Report Period</label>
+            <select id="nps-period" class="text-input text-input--sm" style="min-width:160px">
+              <option value="YTD">Current Year (default)</option>
+              <option value="MTD">Current Month</option>
+              <option value="QTD">Current Quarter</option>
+              <option value="PREV-M">Previous Month</option>
+              <option value="PREV-Q">Previous Quarter</option>
+              <option value="PREV-Y">Previous Year</option>
+              <option value="TODAY">Today</option>
+            </select>
+          </div>
+          <button class="btn btn--primary" id="nps-extract-btn">
+            <span id="nps-extract-label">Extract &amp; Ingest NPS</span>
+          </button>
+        </div>
+        <div id="nps-extract-result" class="ingest-result"></div>
+      </div>
+
+      <!-- 3. Resolve Unassigned NPS Owners -->
+      <div class="ingest-card ingest-card--full">
+        <h3>🔍 Resolve Unassigned NPS Owners</h3>
+        <p class="ingest-card__desc">
+          Looks up each unassigned NPS request number directly from the EngageSupport ES API
+          to find the <strong>Request Owner</strong> (Assigned to). Saves results as durable
+          overrides that survive re-ingestion. Requires a valid IBM session.
+          Runs automatically after every ingestion — click to trigger manually.
+        </p>
+        <div class="form-row">
+          <button class="btn btn--secondary" id="nps-resolve-btn">
+            <span id="nps-resolve-label">Resolve Owners</span>
+          </button>
+        </div>
+        <div id="nps-resolve-result" class="ingest-result"></div>
+      </div>
+
+      <!-- Manual upload cards -->
+      <div class="ingest-card">
+        <h3>Request View XLSX</h3>
+        <p class="ingest-card__desc">Upload a <code>request_view_*.xlsx</code> file to ingest closed requests.</p>
+        <div class="form-row">
+          <label class="btn btn--secondary" for="rv-file-input" id="rv-file-label">Choose file…</label>
+          <input type="file" id="rv-file-input" accept=".xlsx" style="display:none" />
+          <button class="btn btn--primary" id="rv-ingest-btn">Upload &amp; Ingest</button>
+        </div>
+        <div id="rv-result" class="ingest-result"></div>
+      </div>
+
+      <div class="ingest-card">
+        <h3>NPS Export XLSX</h3>
+        <p class="ingest-card__desc">Upload a <code>nps_export_*.xlsx</code> or <code>Export_Details_SalesFB.xlsx</code> file.</p>
+        <div class="form-row">
+          <label class="btn btn--secondary" for="nps-file-input" id="nps-file-label">Choose file…</label>
+          <input type="file" id="nps-file-input" accept=".xlsx" style="display:none" />
+          <button class="btn btn--primary" id="nps-ingest-btn">Upload &amp; Ingest</button>
+        </div>
+        <div id="nps-result" class="ingest-result"></div>
+      </div>
+    </div>
+
+    <!-- Ingestion history -->
+    <div class="section-header"><h3>Ingestion History</h3></div>
+    <div class="table-wrap">
+      <table class="data-table" id="history-table">
+        <thead><tr>
+          <th>Source</th><th>Filename</th><th>Rows</th><th>Status</th><th>Ingested At</th><th>Error</th>
+        </tr></thead>
+        <tbody id="history-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Live log panel -->
+    <div class="section-header"><h3>Live Log</h3></div>
+    <div class="log-panel" id="log-panel"></div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: Admin
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-admin">
+    <div class="page-header"><h1>Admin</h1></div>
+
+    <div class="ingest-grid">
+      <!-- Squad Members -->
+      <div class="ingest-card ingest-card--full">
+        <h3>Squad Members</h3>
+        <p>Manage the team email → display name mapping used for attribution.</p>
+        <div class="form-row">
+          <input type="email" id="sm-email" class="text-input text-input--sm" placeholder="email@ibm.com" />
+          <input type="text"  id="sm-email-raw" class="text-input text-input--sm" placeholder="Firstname Lastname/Location/IBM" />
+          <input type="text"  id="sm-name" class="text-input text-input--sm" placeholder="Display Name" />
+          <input type="text"  id="sm-sap" class="text-input text-input--sm" placeholder="SAP ID (optional)" />
+          <button class="btn btn--primary" id="sm-add-btn">Add</button>
+        </div>
+        <div id="sm-result" class="ingest-result"></div>
+        <div class="table-wrap">
+          <table class="data-table" id="sm-table">
+            <thead><tr><th>Name</th><th>Email</th><th>Email Raw</th><th>SAP ID</th></tr></thead>
+            <tbody id="sm-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Reason Codes -->
+      <div class="ingest-card ingest-card--full">
+        <h3>Reason Codes</h3>
+        <p>Reference table mapping code tokens (A6, M12, R5…) to Sub-Process, Complexity, Weight.</p>
+        <div class="table-wrap">
+          <table class="data-table" id="rc-table">
+            <thead><tr><th>Code</th><th>Sub-Process</th><th>Process</th><th>Complexity</th><th>Weight</th></tr></thead>
+            <tbody id="rc-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Danger Zone -->
+      <div class="ingest-card ingest-card--full danger-zone">
+        <div class="danger-zone__header">
+          <svg viewBox="0 0 20 20" fill="none" width="18" height="18">
+            <path d="M10 2L1.5 17h17L10 2z" stroke="#ff8389" stroke-width="1.5" fill="rgba(255,131,137,.08)"/>
+            <path d="M10 8v4M10 14v1" stroke="#ff8389" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <h3 style="color:var(--red-40)">Danger Zone</h3>
+        </div>
+        <p class="ingest-card__desc">
+          Clear the current data shown across all dashboard pages for a fresh analysis.
+          Lookup tables (squad members, reason codes) are always preserved.
+        </p>
+        <div style="display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:4px">
+          <button class="btn btn--danger" id="clear-data-btn-admin">
+            <svg viewBox="0 0 16 16" width="13" height="13" style="margin-right:5px"><path d="M2 4h12M5 4V2h6v2M6 7v5M10 7v5M3 4l1 10h8l1-10" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+            Clear Dashboard Data…
+          </button>
+          <span style="font-size:12px;color:var(--text-secondary)">Choose derived metrics, all imports, or a full reset in the confirmation dialog.</span>
+        </div>
+        <div id="clear-admin-result" class="ingest-result" style="margin-top:8px"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       PAGE: Uncategorized Items
+  ════════════════════════════════════════════════════════════════════════ -->
+  <div class="page" id="page-uncategorized">
+    <div class="page-header">
+      <h1>Uncategorized Items</h1>
+      <p class="page-subtitle">Requests with no Sub-Process classification — assign them manually below.</p>
+    </div>
+
+    <div class="uncat-toolbar">
+      <input type="text" id="uncat-search" class="text-input text-input--sm" placeholder="Search request #, type, customer, comment…" style="width:280px" />
+      <button class="btn btn--ghost" id="uncat-search-btn">Search</button>
+      <span class="uncat-count-label">Showing <strong id="uncat-showing">—</strong> of <strong id="uncat-total">—</strong></span>
+      <span class="spacer"></span>
+      <button class="btn btn--ghost" id="uncat-select-all-btn" title="Select / deselect all visible">☐ Select All</button>
+      <button class="btn btn--primary" id="uncat-bulk-assign-btn" disabled>
+        <svg viewBox="0 0 16 16" width="13" height="13" style="margin-right:4px"><path d="M2 8l4 4 8-8" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+        Save Selected (<span id="uncat-selected-count">0</span>)
+      </button>
+    </div>
+
+    <!-- Bulk assignment dropdowns (appear above the table, apply to all selected rows) -->
+    <div class="uncat-bulk-panel" id="uncat-bulk-panel" style="display:none">
+      <div class="uncat-bulk-row">
+        <label class="filter-label">Sub-Process</label>
+        <select id="bulk-sub-process" class="filter-select filter-select--sm">
+          <option value="">— choose —</option>
+        </select>
+        <label class="filter-label">Process</label>
+        <select id="bulk-process" class="filter-select filter-select--sm">
+          <option value="">— auto —</option>
+        </select>
+        <label class="filter-label">Complexity</label>
+        <select id="bulk-complexity" class="filter-select filter-select--sm">
+          <option value="">— auto —</option>
+          <option>Simple</option>
+          <option>Less Complex</option>
+          <option>Average</option>
+          <option>Complex</option>
+          <option>Very Complex</option>
+        </select>
+        <label class="filter-label">Weight</label>
+        <input type="number" id="bulk-weight" class="text-input text-input--sm" style="width:80px" step="0.25" min="0" max="5" placeholder="auto" />
+        <button class="btn btn--ghost btn--sm" id="uncat-apply-bulk-vals">Apply to selected rows</button>
+      </div>
+    </div>
+
+    <div class="table-wrap table-wrap--uncat" id="uncat-table-wrap">
+      <table class="data-table uncat-table" id="uncat-table">
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox" id="uncat-check-all" /></th>
+            <th>Request #</th>
+            <th>Type</th>
+            <th>Customer</th>
+            <th>Last Comment</th>
+            <th>Close Date</th>
+            <th>Member</th>
+            <th>Sub-Process</th>
+            <th>Process</th>
+            <th>Complexity</th>
+            <th>Weight</th>
+          </tr>
+        </thead>
+        <tbody id="uncat-tbody"></tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div class="uncat-pagination" id="uncat-pagination"></div>
+
+    <!-- Save result -->
+    <div id="uncat-save-result" class="ingest-result" style="margin-top:12px"></div>
+  </div>
+
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>

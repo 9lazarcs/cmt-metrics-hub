@@ -1,0 +1,38 @@
+[
+  {
+    "text": "Reset to Default",
+    "id": "",
+    "class": "filter-box more-filters clear-btn",
+    "tag": "BUTTON"
+  },
+  {
+    "text": "Update",
+    "id": "",
+    "class": "filter-box more-filters update-btn",
+    "tag": "BUTTON"
+  },
+  {
+    "text": "Save View",
+    "id": "",
+    "class": "save-btnSum",
+    "tag": "BUTTON"
+  },
+  {
+    "text": "×",
+    "id": "",
+    "class": "close",
+    "tag": "BUTTON"
+  },
+  {
+    "text": "Save",
+    "id": "",
+    "class": "save-btn",
+    "tag": "BUTTON"
+  },
+  {
+    "text": "Cancel",
+    "id": "",
+    "class": "cancel-btn",
+    "tag": "BUTTON"
+  }
+]
